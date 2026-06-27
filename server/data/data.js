@@ -23,6 +23,33 @@ const options = [
     price: 0.25,
   },
 
+  // Milks
+  {
+    category: 'milk',
+    name: 'None',
+    price: 0,
+  },
+  {
+    category: 'milk',
+    name: 'Dairy',
+    price: 0.5,
+  },
+  {
+    category: 'milk',
+    name: 'Oat',
+    price: 1,
+  },
+  {
+    category: 'milk',
+    name: 'Soy',
+    price: 1,
+  },
+  {
+    category: 'milk',
+    name: 'Almond',
+    price: 1,
+  },
+
   // Syrups
   {
     category: 'syrup',
@@ -46,33 +73,6 @@ const options = [
     name: 'Mocha',
     price: 0.75,
     image: 'https://images.unsplash.com/photo-1623000850264-08be785877bd',
-  },
-
-  // Milks
-  {
-    category: 'milk',
-    name: 'None',
-    price: 0,
-  },
-  {
-    category: 'milk',
-    name: 'Dairy',
-    price: 0.5,
-  },
-  {
-    category: 'milk',
-    name: 'Soy',
-    price: 1,
-  },
-  {
-    category: 'milk',
-    name: 'Oat',
-    price: 1,
-  },
-  {
-    category: 'milk',
-    name: 'Almond',
-    price: 1,
   },
 ]
 

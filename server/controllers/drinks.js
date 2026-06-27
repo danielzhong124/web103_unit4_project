@@ -25,8 +25,8 @@ const createDrink = async (req, res) => {
   try {
     const { name, size_option_id, preparation_option_id, syrup_option_id, milk_option_id } =
       req.body
-    const insertQuery = `INSERT INTO drinks (name, size_option_id, preparation_option_id, syrup_option_id, milk_option_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`
-    const values = [name, size_option_id, preparation_option_id, syrup_option_id, milk_option_id]
+    const insertQuery = `INSERT INTO drinks (name, size_option_id, preparation_option_id, milk_option_id, syrup_option_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`
+    const values = [name, size_option_id, preparation_option_id, milk_option_id, syrup_option_id]
     const result = await pool.query(insertQuery, values)
 
     res.status(201).json(result.rows[0])
@@ -38,15 +38,15 @@ const createDrink = async (req, res) => {
 const updateDrink = async (req, res) => {
   try {
     const { id } = parseInt(req.params)
-    const { name, size_option_id, preparation_option_id, syrup_option_id, milk_option_id } =
+    const { name, size_option_id, preparation_option_id, milk_option_id, syrup_option_id } =
       req.body
-    const updateQuery = `UPDATE drinks SET name = $1, size_option_id = $2, preparation_option_id = $3, syrup_option_id = $4, milk_option_id = $5 WHERE id = $6 RETURNING *`
+    const updateQuery = `UPDATE drinks SET name = $1, size_option_id = $2, preparation_option_id = $3, milk_option_id = $4, syrup_option_id = $5 WHERE id = $6 RETURNING *`
     const values = [
       name,
       size_option_id,
       preparation_option_id,
-      syrup_option_id,
       milk_option_id,
+      syrup_option_id,
       id,
     ]
     const result = await pool.query(updateQuery, values)

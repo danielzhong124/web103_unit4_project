@@ -12,8 +12,8 @@ const createDrinksTable = async () => {
 
       size_option_id INT NOT NULL REFERENCES options(id),
       preparation_option_id INT NOT NULL REFERENCES options(id),
-      syrup_option_id INT NOT NULL REFERENCES options(id),
-      milk_option_id INT NOT NULL REFERENCES options(id)
+      milk_option_id INT NOT NULL REFERENCES options(id),
+      syrup_option_id INT NOT NULL REFERENCES options(id)
     );
   `
   try {
@@ -26,7 +26,7 @@ const createDrinksTable = async () => {
 
 const createOptionsTable = async () => {
   const createTableQuery = `
-    DROP TABLE IF EXISTS options;
+    DROP TABLE IF EXISTS options CASCADE;
 
     CREATE TABLE IF NOT EXISTS options (
       id SERIAL PRIMARY KEY,
