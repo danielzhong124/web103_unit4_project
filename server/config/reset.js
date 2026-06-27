@@ -1,15 +1,21 @@
 import { pool } from './database.js'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import './dotenv.js'
+import optionsData from '../data/data.js'
 
 const createDrinksTable = async () => {
   const createTableQuery = `
-        CREATE TABLE IF NOT EXISTS drinks (
-            id serial PRIMARY KEY,
-            name VARCHAR(100) NOT NULL
-        );
-    `
+    DROP TABLE IF EXISTS drinks;
+
+    CREATE TABLE IF NOT EXISTS drinks (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+
+      size_option_id INT NOT NULL REFERENCES options(id),
+      preparation_option_id INT NOT NULL REFERENCES options(id),
+      syrup_option_id INT NOT NULL REFERENCES options(id),
+      milk_option_id INT NOT NULL REFERENCES options(id)
+    );
+  `
   try {
     await pool.query(createTableQuery)
     console.log('✅ drinks table created successfully')
@@ -18,84 +24,47 @@ const createDrinksTable = async () => {
   }
 }
 
-const createSizesTable = async () => {
+const createOptionsTable = async () => {
   const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS sizes (
+    DROP TABLE IF EXISTS options;
+
+    CREATE TABLE IF NOT EXISTS options (
       id SERIAL PRIMARY KEY,
+      category VARCHAR(20) NOT NULL,
       name VARCHAR(50) NOT NULL,
-      price DECIMAL(4, 2) NOT NULL
-    );
-  `
-
-  try {
-    await pool.query(createTableQuery)
-    console.log('✅ size options table created successfully')
-  } catch (error) {
-    console.error('❌ error creating size options table', error)
-  }
-}
-
-const createPreparationsTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS preparations (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(50) NOT NULL,
-      price DECIMAL(4, 2) NOT NULL
-    );
-  `
-
-  try {
-    await pool.query(createTableQuery)
-    console.log('✅ preparation options table created successfully')
-  } catch (error) {
-    console.error('❌ error creating preparation options table', error)
-  }
-}
-
-const createSyrupsTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS syrups (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(50) NOT NULL,
-      price DECIMAL(4, 2) NOT NULL,
+      price DECIMAL(4, 2) NOT NULL DEFAULT 0,
       image VARCHAR(255)
     );
   `
 
   try {
     await pool.query(createTableQuery)
-    console.log('✅ syrup options table created successfully')
+    console.log('✅ options table created successfully')
   } catch (error) {
-    console.error('❌ error creating syrup options table', error)
+    console.error('❌ error creating options table', error)
   }
 }
 
-const createMilksTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS milks (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(50) NOT NULL,
-      price DECIMAL(4, 2) NOT NULL
-    );
-  `
+const seedOptionsTable = async () => {
+  await createOptionsTable()
 
-  try {
-    await pool.query(createTableQuery)
-    console.log('✅ milk options table created successfully')
-  } catch (error) {
-    console.error('❌ error creating milk options table', error)
-  }
+  optionsData.forEach((option) => {
+    const insertQuery = {
+      text: `INSERT INTO options (category, name, price, image) VALUES ($1, $2, $3, $4)`,
+    }
+
+    const values = [option.category, option.name, option.price, option.image || null]
+
+    pool.query(insertQuery, values, (error, result) => {
+      if (error) {
+        console.error('❌ error inserting option', error)
+        return
+      }
+
+      console.log(`✅ ${option.category}:${option.name} seeded successfully`)
+    })
+  })
 }
 
-const createDrinksOptionsTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS milks (
-      drink_id NOT NULL REFERENCES drinks(id) ON DELETE CASCADE,
-      size_id NOT NULL REFERENCES sizes(id) ON DELETE CASCADE,
-      preparation_id NOT NULL REFERENCES preparations(id) ON DELETE CASCADE,
-      syrup_id NOT NULL REFERENCES syrups(id) ON DELETE CASCADE,
-      milk_id NOT NULL REFERENCES milks(id) ON DELETE CASCADE,
-      PRIMARY KEY (drink_id, size_id, preparation_id, syrup_id, milk_id)
-    );
-  `
-}
+createDrinksTable()
+seedOptionsTable()
