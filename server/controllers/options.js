@@ -1,8 +1,8 @@
 import { pool } from '../config/database.js'
 
-const getOptionsByCategory = async (req, res) => {
+const getAllOptions = async (req, res) => {
   try {
-    const selectQuery = `SELECT * FROM options WHERE category = $1 ORDER BY id`
+    const selectQuery = `SELECT * FROM options ORDER BY id`
     const result = await pool.query(selectQuery)
     res.status(200).json(result.rows)
   } catch (error) {
@@ -22,4 +22,4 @@ const getOptionById = async (req, res) => {
   }
 }
 
-export default { getOptionsByCategory, getOptionById }
+export default { getAllOptions, getOptionById }
